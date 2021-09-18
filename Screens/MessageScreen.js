@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const EditProfileScreen = () => {
+const MessagesScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Welcome EditProfile Screen</Text>
+      <Text style={styles.text}>Welcome Message Screen</Text>
 
     </View>
   )
@@ -26,4 +26,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default EditProfileScreen
+export default MessagesScreen

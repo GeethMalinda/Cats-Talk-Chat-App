@@ -6,11 +6,16 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import ProfileScreen from '../Screens/ProfileScreen'
 import PostScreen from '../Screens/PostScreen'
+import ChatScreen from '../Screens/ChatScreen'
+import EditProfileScreen from '../Screens/EditProfileScreen'
+import MessagesScreen from '../Screens/MessageScreen'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import HomeScreen from '../Screens/HomeScreen'
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
 
-const HomeScreen = ({ navigation }) => (
+const HomeStack = ({ navigation }) => (
   <Stack.Navigator>
     <Stack.Screen
       name="RN Social"
@@ -122,9 +127,54 @@ const ProfileStack = ({ navigation }) => (
 const AppStack = () => {
 
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="HomeScreen" component={HomeScreen}/>
-    </Stack.Navigator>
+    <Tab.Navigator
+      tabBarOptions={{
+        activeTintColor: '#2e64e5',
+      }}>
+      <Tab.Screen
+        name="Home"
+        component={HomeStack}
+        options={({ route }) => ({
+          tabBarLabel: 'Home',
+          // tabBarVisible: route.state && route.state.index === 0,
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="home-outline"
+              color={color}
+              size={size}
+            />
+          ),
+        })}
+      />
+      <Tab.Screen
+        name="Messages"
+        component={ChatScreen}
+        options={() => ({
+          // tabBarVisible: getTabBarVisibility(route),
+          // Or Hide tabbar when push!
+          // https://github.com/react-navigation/react-navigation/issues/7677
+          // tabBarVisible: route.state && route.state.index === 0,
+          // tabBarLabel: 'Home',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons
+              name="chatbox-ellipses-outline"
+              color={color}
+              size={size}
+            />
+          ),
+        })}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          // tabBarLabel: 'Home',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person-outline" color={color} size={size}/>
+          ),
+        }}
+      />
+    </Tab.Navigator>
   )
 }
 export default AppStack
