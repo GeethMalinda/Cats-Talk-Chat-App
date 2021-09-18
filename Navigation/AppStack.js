@@ -18,12 +18,12 @@ const Tab = createBottomTabNavigator()
 const HomeStack = ({ navigation }) => (
   <Stack.Navigator>
     <Stack.Screen
-      name="RN Social"
+      name="Cat Talks"
       component={HomeScreen}
       options={{
         headerTitleAlign: 'center',
         headerTitleStyle: {
-          color: '#2e64e5',
+          color: '#d35400',
           fontFamily: 'Kufam-SemiBoldItalic',
           fontSize: 18,
         },
@@ -37,7 +37,7 @@ const HomeStack = ({ navigation }) => (
               name="plus"
               size={22}
               backgroundColor="#fff"
-              color="#2e64e5"
+              color="#d35400"
               onPress={() => navigation.navigate('AddPost')}
             />
           </View>
@@ -58,7 +58,7 @@ const HomeStack = ({ navigation }) => (
         headerBackTitleVisible: false,
         headerBackImage: () => (
           <View style={{ marginLeft: 15 }}>
-            <Ionicons name="arrow-back" size={25} color="#2e64e5"/>
+            <Ionicons name="arrow-back" size={25} color="#d35400"/>
           </View>
         ),
       }}
@@ -77,7 +77,7 @@ const HomeStack = ({ navigation }) => (
         headerBackTitleVisible: false,
         headerBackImage: () => (
           <View style={{ marginLeft: 15 }}>
-            <Ionicons name="arrow-back" size={25} color="#2e64e5"/>
+            <Ionicons name="arrow-back" size={25} color="#d35400"/>
           </View>
         ),
       }}
@@ -129,7 +129,7 @@ const AppStack = () => {
   return (
     <Tab.Navigator
       tabBarOptions={{
-        activeTintColor: '#2e64e5',
+        activeTintColor: '#d35400',
       }}>
       <Tab.Screen
         name="Home"
