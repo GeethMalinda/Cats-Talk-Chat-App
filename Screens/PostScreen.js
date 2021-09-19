@@ -1,9 +1,10 @@
-import { Platform, StyleSheet, View, } from 'react-native'
+import { Alert, Platform, StyleSheet, View, } from 'react-native'
 import React, { useState } from 'react'
-import { AddImage, InputField, InputWrapper } from '../Styles/AddPost'
+import { AddImage, InputField, InputWrapper, SubmitBtn, SubmitBtnText } from '../Styles/AddPost'
 import ActionButton from 'react-native-action-button'
 import Icon from 'react-native-vector-icons/Ionicons'
 import ImagePicker from 'react-native-image-crop-picker'
+import storage from '@react-native-firebase/storage'
 
 const PostScreen = () => {
 
@@ -36,6 +37,21 @@ const PostScreen = () => {
     })
   }
 
+  const submitPost = async () => {
+    const uploadUrl = image
+    let filename = uploadUrl.substring(uploadUrl.lastIndexOf('/') + 1)
+
+    setUploading(true)
+    try {
+      await storage().ref(filename).putFile(uploadUrl)
+      setUploading(false)
+      Alert.alert('Image Uploaded ..!', 'Image Already Exists In FireBase Cloud Storage..')
+    } catch (e) {
+      console.log(e)
+    }
+    setImage(null)
+  }
+
   return (
     <View style={styles.container}>
       <InputWrapper>
@@ -44,6 +60,10 @@ const PostScreen = () => {
           placeholder="Whats On Your Mind "
           multiline
           numberOfLines={6}/>
+
+        <SubmitBtn onPress={submitPost}>
+          <SubmitBtnText>Post</SubmitBtnText>
+        </SubmitBtn>
       </InputWrapper>
       <ActionButton buttonColor="#2e64e5">
         <ActionButton.Item
