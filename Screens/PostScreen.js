@@ -43,6 +43,11 @@ const PostScreen = () => {
     let filename = uploadUrl.substring(uploadUrl.lastIndexOf('/') + 1)
     const task = storage().ref(filename).putFile(uploadUrl)
 
+    // Add timestamp to File Name //for continue to save repetive uplaods
+    const extension = filename.split('.').pop()
+    const name = filename.split('.').slice(0, -1).join('.')
+    filename = name + Date.now() + '.' + extension
+
     setUploading(true)
     setTransferred(0)
 
@@ -61,7 +66,7 @@ const PostScreen = () => {
     try {
       await task
       setUploading(false)
-      Alert.alert('Image Uploaded ..!', 'Image Already Exists In FireBase Cloud Storage..')
+      Alert.alert('Image Uploaded ..!', 'Image Saved To FireBase Cloud Storage')
     } catch (e) {
       console.log(e)
     }
