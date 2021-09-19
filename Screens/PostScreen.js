@@ -1,10 +1,11 @@
 import { Alert, Platform, StyleSheet, View, } from 'react-native'
 import React, { useState } from 'react'
-import { AddImage, InputField, InputWrapper, SubmitBtn, SubmitBtnText } from '../Styles/AddPost'
+import { AddImage, InputField, InputWrapper, StatusWrapper, SubmitBtn, SubmitBtnText } from '../Styles/AddPost'
 import ActionButton from 'react-native-action-button'
 import Icon from 'react-native-vector-icons/Ionicons'
 import ImagePicker from 'react-native-image-crop-picker'
 import storage from '@react-native-firebase/storage'
+import { ActivityIndicator, Text } from 'react-native-paper'
 
 const PostScreen = () => {
 
@@ -40,10 +41,25 @@ const PostScreen = () => {
   const submitPost = async () => {
     const uploadUrl = image
     let filename = uploadUrl.substring(uploadUrl.lastIndexOf('/') + 1)
+    const task = storage().ref(filename).putFile(uploadUrl)
 
     setUploading(true)
+    setTransferred(0)
+
+    //byte uploading status eka chek kragnna use krai
+    task.on('state_changed', taskSnapshot => {
+      console.log(`${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`)
+
+      //presentage get
+      setTransferred(
+        Math.round(taskSnapshot.bytesTransferred / taskSnapshot.totalBytes) *
+        100,
+      )
+
+    })
+
     try {
-      await storage().ref(filename).putFile(uploadUrl)
+      await task
       setUploading(false)
       Alert.alert('Image Uploaded ..!', 'Image Already Exists In FireBase Cloud Storage..')
     } catch (e) {
@@ -60,10 +76,17 @@ const PostScreen = () => {
           placeholder="Whats On Your Mind "
           multiline
           numberOfLines={6}/>
+        {uploading ? (
+          <StatusWrapper>
+            <Text>{transferred} % Completed!</Text>
+            <ActivityIndicator size="large" color="#0000ff"/>
+          </StatusWrapper>
+        ) : (
+          <SubmitBtn onPress={submitPost}>
+            <SubmitBtnText>Post</SubmitBtnText>
+          </SubmitBtn>
+        )}
 
-        <SubmitBtn onPress={submitPost}>
-          <SubmitBtnText>Post</SubmitBtnText>
-        </SubmitBtn>
       </InputWrapper>
       <ActionButton buttonColor="#2e64e5">
         <ActionButton.Item
