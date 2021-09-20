@@ -1,13 +1,16 @@
 import { Alert, Platform, StyleSheet, View, } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { AddImage, InputField, InputWrapper, StatusWrapper, SubmitBtn, SubmitBtnText } from '../Styles/AddPost'
 import ActionButton from 'react-native-action-button'
 import Icon from 'react-native-vector-icons/Ionicons'
 import ImagePicker from 'react-native-image-crop-picker'
 import storage from '@react-native-firebase/storage'
 import { ActivityIndicator, Text } from 'react-native-paper'
+import firestore from '@react-native-firebase/firestore'
+import { AuthContext } from '../Navigation/AuthProvider'
 
 const PostScreen = () => {
+  const { user, logout } = useContext(AuthContext)
 
   const [image, setImage] = useState(null)
   const [uploading, setUploading] = useState(false)
@@ -39,9 +42,34 @@ const PostScreen = () => {
   }
 
   const submitPost = async () => {
+
+    const imageUrl = await uploadImage()
+    console.log('Image Url: ', imageUrl)
+
+    firestore()
+      .collection('posts')
+      .add({
+        userId: user.uid,
+        post: post,
+        postImg: imageUrl,
+        postTime: firestore.Timestamp.fromDate(new Date()),
+        likes: null,
+        comments: null,
+      }).then(() => {
+      console.log('post Added')
+      Alert.alert('Image Uploaded ..!', 'Image Saved Sucessfully..')
+      setPost(null)
+    }).catch((e) => {
+
+    })
+
+  }
+
+  const uploadImage = async () => {
     const uploadUrl = image
     let filename = uploadUrl.substring(uploadUrl.lastIndexOf('/') + 1)
-    const task = storage().ref(filename).putFile(uploadUrl)
+    const storageRef = storage().ref(`photo/${filename})`)
+    const task = storageRef.putFile(uploadUrl)
 
     // Add timestamp to File Name //for continue to save repetive uplaods
     const extension = filename.split('.').pop()
@@ -65,12 +93,19 @@ const PostScreen = () => {
 
     try {
       await task
+
+      const url = await storageRef.getDownloadURL()
+
       setUploading(false)
-      Alert.alert('Image Uploaded ..!', 'Image Saved To FireBase Cloud Storage')
+      setImage(null)
+
+      // Alert.alert('Image Uploaded ..!', 'Image Saved To FireBase Cloud Storage')
+
+      return url
     } catch (e) {
       console.log(e)
+      return null
     }
-    setImage(null)
   }
 
   return (
@@ -80,7 +115,10 @@ const PostScreen = () => {
         <InputField
           placeholder="Whats On Your Mind "
           multiline
-          numberOfLines={6}/>
+          numberOfLines={6}
+          value={post}
+          onChangeText={(postContent) => setPost(postContent)}
+        />
         {uploading ? (
           <StatusWrapper>
             <Text>{transferred} % Completed!</Text>

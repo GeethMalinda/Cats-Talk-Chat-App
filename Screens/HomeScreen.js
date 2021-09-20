@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Container, } from '../Styles/HomeStyle.'
 import { FlatList, } from 'react-native'
 import PostCard from '../Component/PostCard'
+import firestore from '@react-native-firebase/firestore'
 
 const Posts = [
   {
@@ -68,10 +69,53 @@ const Posts = [
 
 const HomeScreen = () => {
 
+  const [post, setPost] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+
+    const fetchPosts = async () => {
+      try {
+        const list = []
+        firestore()
+          .collection('posts')
+          .get()
+          .then((querySnapshot) => {
+            console.log('Total posts ', querySnapshot.size)
+            querySnapshot.forEach(doc => {
+              const { userId, post, postImg, postTime } = doc.data()
+              list.push({
+                id: doc.id,
+                userId,
+                userName: 'Test name',
+                userImg: postImg,
+                postTime: postTime,
+                post,
+                postImg: postImg,
+                liked: false,
+                likes,
+                comments,
+              })
+            })
+          })
+        setPost(list)
+
+        if (loading) {
+          setLoading(false)
+        }
+        console.log('list==================>', list)
+      } catch (e) {
+        console.log(e)
+      }
+    }
+
+    fetchPosts()
+  }, [])
+
   return (
     <Container>
       <FlatList
-        data={Posts}
+        data={post}
         renderItem={({ item }) => <PostCard item={item}/>}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
