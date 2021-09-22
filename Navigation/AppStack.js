@@ -128,9 +128,29 @@ const AppStack = () => {
 
   return (
     <Tab.Navigator
-      tabBarOptions={{
-        activeTintColor: '#d35400',
-      }}>
+      // tabBarOptions={{
+      //   activeTintColor: '#d35400',
+      //
+      // }}
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName
+
+          if (route.name === 'Home') {
+            iconName = focused
+              ? 'ios-information-circle'
+              : 'ios-information-circle-outline'
+          } else if (route.name === 'Settings') {
+            iconName = focused ? 'ios-list-box' : 'ios-list'
+          }
+
+          // You can return any component that you like here!
+          return <Ionicons name={iconName} size={size} color={color}/>
+        },
+        tabBarActiveTintColor: 'tomato',
+        tabBarInactiveTintColor: '#d35400',
+      })}
+    >
       <Tab.Screen
         name="Home"
         component={HomeStack}
@@ -150,11 +170,6 @@ const AppStack = () => {
         name="Messages"
         component={ChatScreen}
         options={() => ({
-          // tabBarVisible: getTabBarVisibility(route),
-          // Or Hide tabbar when push!
-          // https://github.com/react-navigation/react-navigation/issues/7677
-          // tabBarVisible: route.state && route.state.index === 0,
-          // tabBarLabel: 'Home',
           tabBarIcon: ({ color, size }) => (
             <Ionicons
               name="chatbox-ellipses-outline"
@@ -168,7 +183,6 @@ const AppStack = () => {
         name="Profile"
         component={ProfileScreen}
         options={{
-          // tabBarLabel: 'Home',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person-outline" color={color} size={size}/>
           ),

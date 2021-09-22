@@ -1,5 +1,5 @@
 import { Alert, Platform, StyleSheet, View, } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { AddImage, InputField, InputWrapper, StatusWrapper, SubmitBtn, SubmitBtnText } from '../Styles/AddPost'
 import ActionButton from 'react-native-action-button'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -16,6 +16,14 @@ const PostScreen = () => {
   const [uploading, setUploading] = useState(false)
   const [transferred, setTransferred] = useState(0)
   const [post, setPost] = useState(null)
+
+  useEffect(() => {
+
+  }, [])
+
+  function fetchPosts () {
+
+  }
 
   const takePhotoFromCamera = () => {
     ImagePicker.openCamera({
@@ -57,15 +65,20 @@ const PostScreen = () => {
         comments: null,
       }).then(() => {
       console.log('post Added')
-      Alert.alert('Image Uploaded ..!', 'Image Saved Sucessfully..')
+      Alert.alert('Post published!',
+        'Your post has been published Successfully!')
+
       setPost(null)
     }).catch((e) => {
-
+      console.log('submit Post Method Error===========>', e)
     })
 
   }
 
   const uploadImage = async () => {
+    if (image === null) {
+      return null
+    }
     const uploadUrl = image
     let filename = uploadUrl.substring(uploadUrl.lastIndexOf('/') + 1)
     const storageRef = storage().ref(`photo/${filename})`)

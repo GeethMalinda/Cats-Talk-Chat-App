@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
   Card,
   Divider,
@@ -15,8 +15,11 @@ import {
 } from '../Styles/HomeStyle.'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
-const PostCard = ({ item }) => {
+import { AuthContext } from '../Navigation/AuthProvider'
+import moment from 'moment'
 
+const PostCard = ({ item, onDelete }) => {
+  const { user, logout } = useContext(AuthContext)
   const likeIcon = item.liked ? 'heart' : 'heart-outline'
 
   let likeText
@@ -38,16 +41,17 @@ const PostCard = ({ item }) => {
   }
 
   return (
-    <Card>
+    <Card key={item.id}>
       <UserInfo>
-        <UserImg source={item.userImg}/>
+        <UserImg source={{ uri: item.userImg }}/>
         <UserInfoText>
           <UserName>{item.userName}</UserName>
-          <PostTime>{item.postTime}</PostTime>
+          <PostTime>{moment(item.postTime.toDate()).fromNow()}</PostTime>
+          {/*<PostTime>{item.postTime.toString()}</PostTime>*/}
         </UserInfoText>
       </UserInfo>
       <PostText>{item.post}</PostText>
-      {item.postImg !== 'none' ? <PostImg source={item.postImg}/> : <Divider/>}
+      {item.postImg !== null ? <PostImg source={{ uri: item.postImg }}/> : <Divider/>}
       {/*<Divider/>*/}
       {/*<PostImg source={require('../assects/posts/post-img-1.jpg')}/>*/}
       <InteractionWrapper>
@@ -60,6 +64,16 @@ const PostCard = ({ item }) => {
           <Ionicons name="chatbubbles-outline" size={25}/>
           <InteractionText>{commentText}</InteractionText>
         </Interaction>
+
+        {/*if the current user id matchs the user id of the post Creator*/}
+        {
+          user.uid === item.userId ?
+            <Interaction onPress={() => onDelete(item.id)}>
+              <Ionicons name="trash-outline" size={25}/>
+            </Interaction> :
+            null
+        }
+
       </InteractionWrapper>
     </Card>
   )

@@ -5,6 +5,7 @@ import { AuthContext } from '../Navigation/AuthProvider'
 
 const ProfileScreen = () => {
   const { user, logout } = useContext(AuthContext)
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Welcome {user.uid}</Text>
