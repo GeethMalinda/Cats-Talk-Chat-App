@@ -87,9 +87,9 @@ const HomeStack = ({ navigation }) => (
 
 const MessageStack = ({ navigation }) => (
   <Stack.Navigator>
-    <Stack.Screen name="Messages" component={MessagesScreen}/>
+    <Stack.Screen name="MessageScreen" component={MessagesScreen}/>
     <Stack.Screen
-      name="Chat"
+      name="ChatScreen"
       component={ChatScreen}
       options={({ route }) => ({
         title: route.params.userName,
@@ -126,6 +126,17 @@ const ProfileStack = ({ navigation }) => (
 )
 const AppStack = () => {
 
+  const getTabBarVisibility = (route) => {
+    console.log(route)
+    const routeName = route.state
+      ? route.state.routes[route.state.index].name : ''
+
+    if (routeName === 'Chat') {
+      return false
+    }
+    return true
+  }
+
   return (
     <Tab.Navigator
       // tabBarOptions={{
@@ -133,6 +144,7 @@ const AppStack = () => {
       //
       // }}
       screenOptions={({ route }) => ({
+        headerShown: false,
         tabBarIcon: ({ focused, color, size }) => {
           let iconName
 
@@ -156,7 +168,6 @@ const AppStack = () => {
         component={HomeStack}
         options={({ route }) => ({
           tabBarLabel: 'Home',
-          // tabBarVisible: route.state && route.state.index === 0,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="home-outline"
@@ -168,8 +179,9 @@ const AppStack = () => {
       />
       <Tab.Screen
         name="Messages"
-        component={ChatScreen}
-        options={() => ({
+        component={MessageStack}
+        options={({ route }) => ({
+          tabBarVisible: route.state && route.state.index === 0,
           tabBarIcon: ({ color, size }) => (
             <Ionicons
               name="chatbox-ellipses-outline"
@@ -181,7 +193,7 @@ const AppStack = () => {
       />
       <Tab.Screen
         name="Profile"
-        component={ProfileScreen}
+        component={ProfileStack}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person-outline" color={color} size={size}/>
