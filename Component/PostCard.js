@@ -53,7 +53,6 @@ const PostCard = ({ item, onDelete }) => {
       <PostText>{item.post}</PostText>
       {item.postImg !== null ? <PostImg source={{ uri: item.postImg }}/> : <Divider/>}
       {/*<Divider/>*/}
-      {/*<PostImg source={require('../assects/posts/post-img-1.jpg')}/>*/}
       <InteractionWrapper>
         <Interaction active={item.liked}>
           <Ionicons name={likeIcon} size={25} color={'#c0392b'}/>
